@@ -134,9 +134,47 @@
 
   <div class="progress-bar" id="progress"></div>
 
-  <!-- CARD 1 -->
+  <!-- CARD 1 — סוג מוצר -->
   <div class="card active" id="card-1">
-    <div class="card-number">שלב 1 מתוך 6</div>
+    <div class="card-number">שלב 1 מתוך 8</div>
+    <h2>על איזה סוג מוצר אנחנו מדברים?</h2>
+    <p class="subtitle">לכל קטגוריה יש התנהגות שונה — בחרו את הסוג שעליו אתם ממלאים את הטופס.</p>
+
+    <div class="checkbox-group" id="product-type">
+      <div class="checkbox-item" onclick="selectOne(this, 'product-type')" style="flex-direction:column; align-items:flex-start; gap:6px; padding:18px 16px;">
+        <div style="font-size:26px;">👗</div>
+        <div style="font-weight:700;">בגדים</div>
+        <div style="font-size:12px; color:#888; font-weight:400;">שמלות, חולצות, מכנסיים, אוברולים...</div>
+      </div>
+      <div class="checkbox-item" onclick="selectOne(this, 'product-type')" style="flex-direction:column; align-items:flex-start; gap:6px; padding:18px 16px;">
+        <div style="font-size:26px;">👟</div>
+        <div style="font-weight:700;">נעליים</div>
+        <div style="font-size:12px; color:#888; font-weight:400;">מגפים, סנדלים, נעלי עקב...</div>
+      </div>
+      <div class="checkbox-item" onclick="selectOne(this, 'product-type')" style="flex-direction:column; align-items:flex-start; gap:6px; padding:18px 16px;">
+        <div style="font-size:26px;">👜</div>
+        <div style="font-weight:700;">תיקים</div>
+        <div style="font-size:12px; color:#888; font-weight:400;">תיקי צד, תיקי יד, קלאץ'...</div>
+      </div>
+      <div class="checkbox-item" onclick="selectOne(this, 'product-type')" style="flex-direction:column; align-items:flex-start; gap:6px; padding:18px 16px;">
+        <div style="font-size:26px;">💍</div>
+        <div style="font-weight:700;">תכשיטים</div>
+        <div style="font-size:12px; color:#888; font-weight:400;">שרשראות, עגילים, צמידים...</div>
+      </div>
+    </div>
+
+    <span class="field-label" style="margin-top:20px;">הערות על הקטגוריה (אופציונלי)</span>
+    <input type="text" id="product-type-notes" placeholder="למשל: בעיקר מידה אחת, יש גם מידות ספציפיות...">
+
+    <div class="nav">
+      <div></div>
+      <button class="btn-next" onclick="next()">הבא ←</button>
+    </div>
+  </div>
+
+  <!-- CARD 2 -->
+  <div class="card" id="card-2">
+    <div class="card-number">שלב 2 מתוך 8</div>
     <h2>מאיפה מגיע המוצר?</h2>
     <p class="subtitle">לפני שמעלים ל-Shopify — מה קורה? איך המוצר מגיע אליכם?</p>
 
@@ -147,6 +185,7 @@
       <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>ספק / יצרן</span></div>
       <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>טלפון / אייפד</span></div>
     </div>
+    <input type="text" id="photo-source-notes" placeholder="הערות על מקור התמונות..." style="margin-top:10px;">
 
     <span class="field-label">מי צולם?</span>
     <div class="checkbox-group" id="photo-type">
@@ -155,9 +194,19 @@
       <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>דיטייל (קרוב)</span></div>
       <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>לייפסטייל</span></div>
     </div>
+    <input type="text" id="photo-type-notes" placeholder="הערות על סוג הצילום..." style="margin-top:10px;">
 
     <span class="field-label">כמה תמונות בממוצע למוצר?</span>
     <input type="text" id="photo-count" placeholder="למשל: 4-6 תמונות">
+
+    <span class="field-label">האם יש וידאו למוצר?</span>
+    <div class="checkbox-group" id="video-source">
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>כן, תמיד</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>לפעמים</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>לא בדרך כלל</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>אין בכלל</span></div>
+    </div>
+    <input type="text" id="video-notes" placeholder="מאיפה מגיע הוידאו? YouTube, קובץ מקומי, TikTok..." style="margin-top:10px;">
 
     <div class="nav">
       <div></div>
@@ -166,8 +215,8 @@
   </div>
 
   <!-- CARD 2 -->
-  <div class="card" id="card-2">
-    <div class="card-number">שלב 2 מתוך 6</div>
+  <div class="card" id="card-3">
+    <div class="card-number">שלב 3 מתוך 8</div>
     <h2>איזה מידע יש לכם לפני שמתחילים?</h2>
     <p class="subtitle">מה כבר ידוע כשמגיעים לעלות מוצר?</p>
 
@@ -180,6 +229,7 @@
       <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>קטגוריה</span></div>
       <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>SKU / מספר מוצר</span></div>
     </div>
+    <input type="text" id="known-info-notes" placeholder="הערות נוספות על המידע הזמין..." style="margin-top:10px;">
 
     <span class="field-label">מה לא ידוע ואתם צריכים ליצור / לבדות?</span>
     <textarea id="unknown-info" placeholder="למשל: תיאור המוצר, מילות מפתח, alt text, קולקציות..."></textarea>
@@ -191,8 +241,8 @@
   </div>
 
   <!-- CARD 3 -->
-  <div class="card" id="card-3">
-    <div class="card-number">שלב 3 מתוך 6</div>
+  <div class="card" id="card-4">
+    <div class="card-number">שלב 4 מתוך 8</div>
     <h2>מה עושים ב-Shopify — לפי סדר</h2>
     <p class="subtitle">רשמו את הצעדים שאתם עושים בפועל כשמעלים מוצר. הסדר חשוב.</p>
 
@@ -221,30 +271,9 @@
     </div>
   </div>
 
-  <!-- CARD 4 -->
-  <div class="card" id="card-4">
-    <div class="card-number">שלב 4 מתוך 6</div>
-    <h2>כמה כאב יש בכל שלב?</h2>
-    <p class="subtitle">דרגו כמה זמן ומאמץ לוקח כל חלק. ⭐ = קל, ⭐⭐⭐ = כואב מאוד</p>
-
-    <div class="pain-grid">
-      <div class="pain-row"><span class="pain-label">כתיבת תיאור</span><div class="pain-stars" data-key="desc"><div class="star" onclick="ratePain(this,1)">⭐</div><div class="star" onclick="ratePain(this,2)">⭐</div><div class="star" onclick="ratePain(this,3)">⭐</div></div></div>
-      <div class="pain-row"><span class="pain-label">בחירת תגיות</span><div class="pain-stars" data-key="tags"><div class="star" onclick="ratePain(this,1)">⭐</div><div class="star" onclick="ratePain(this,2)">⭐</div><div class="star" onclick="ratePain(this,3)">⭐</div></div></div>
-      <div class="pain-row"><span class="pain-label">alt text לתמונות</span><div class="pain-stars" data-key="alt"><div class="star" onclick="ratePain(this,1)">⭐</div><div class="star" onclick="ratePain(this,2)">⭐</div><div class="star" onclick="ratePain(this,3)">⭐</div></div></div>
-      <div class="pain-row"><span class="pain-label">meta title/description</span><div class="pain-stars" data-key="meta"><div class="star" onclick="ratePain(this,1)">⭐</div><div class="star" onclick="ratePain(this,2)">⭐</div><div class="star" onclick="ratePain(this,3)">⭐</div></div></div>
-      <div class="pain-row"><span class="pain-label">שיוך לקולקציות</span><div class="pain-stars" data-key="collections"><div class="star" onclick="ratePain(this,1)">⭐</div><div class="star" onclick="ratePain(this,2)">⭐</div><div class="star" onclick="ratePain(this,3)">⭐</div></div></div>
-      <div class="pain-row"><span class="pain-label">העלאת תמונות + סדר</span><div class="pain-stars" data-key="images"><div class="star" onclick="ratePain(this,1)">⭐</div><div class="star" onclick="ratePain(this,2)">⭐</div><div class="star" onclick="ratePain(this,3)">⭐</div></div></div>
-    </div>
-
-    <div class="nav">
-      <button class="btn-back" onclick="back()">→ חזור</button>
-      <button class="btn-next" onclick="next()">הבא ←</button>
-    </div>
-  </div>
-
   <!-- CARD 5 -->
-  <div class="card" id="card-5">
-    <div class="card-number">שלב 5 מתוך 6</div>
+  <div class="card" id="card-6">
+    <div class="card-number">שלב 5 מתוך 7</div>
     <h2>מה קורה אחרי שמעלים?</h2>
     <p class="subtitle">מה עושים לפני שהמוצר עולה לאוויר?</p>
 
@@ -265,6 +294,9 @@
     <span class="field-label">מה הכי כואב בתהליך הנוכחי?</span>
     <textarea id="pain-free" placeholder="מה לוקח הכי הרבה זמן / הכי מעצבן..."></textarea>
 
+    <span class="field-label">מי מאשר — הערות נוספות</span>
+    <input type="text" id="approver-notes" placeholder="למשל: אראל מאשר תמיד לפני פרסום, גם בסופ&quot;ש...">
+
     <div class="nav">
       <button class="btn-back" onclick="back()">→ חזור</button>
       <button class="btn-next" onclick="next()">הבא ←</button>
@@ -272,7 +304,7 @@
   </div>
 
   <!-- CARD 6 -->
-  <div class="card" id="card-6">
+  <div class="card" id="card-7">
     <div class="card-number">שלב 6 מתוך 7</div>
     <h2>מה אתם רוצים שאני אעשה?</h2>
     <p class="subtitle">מה כן אוטומטי, ומה נשאר בידיים?</p>
@@ -299,7 +331,7 @@
   </div>
 
   <!-- CARD 7 -->
-  <div class="card" id="card-7">
+  <div class="card" id="card-8">
     <div class="card-number">שלב 7 מתוך 7</div>
     <h2>כתבו בחופשיות</h2>
     <p class="subtitle">כל מה שלא נכנס לשאלות. תהליכים מיוחדים, חריגים, דברים שחשוב שנדע, כל מה שעולה לכם בראש.</p>
@@ -342,6 +374,13 @@
 
   function toggle(el) {
     el.classList.toggle('checked');
+  }
+
+  function selectOne(el, groupId) {
+    document.querySelectorAll('#' + groupId + ' .checkbox-item').forEach(function(item) {
+      item.classList.remove('checked');
+    });
+    el.classList.add('checked');
   }
 
   function next() {
@@ -415,37 +454,30 @@
   }
 
   function showSummary() {
-    document.getElementById('card-6').classList.remove('active');
+    document.getElementById('card-8').classList.remove('active');
     document.getElementById('progress').style.display = 'none';
     document.getElementById('summary-card').classList.add('active');
 
-    var painLabels = {
-      desc: 'כתיבת תיאור',
-      tags: 'בחירת תגיות',
-      alt: 'alt text',
-      meta: 'meta title/description',
-      collections: 'שיוך לקולקציות',
-      images: 'העלאת תמונות'
-    };
-
-    var painLines = Object.keys(painLabels).map(function(key) {
-      var n = painRatings[key] || 0;
-      var stars = n ? new Array(n + 1).join('⭐') : '—';
-      return painLabels[key] + ': ' + stars;
-    });
-
     var sections = [
-      { title: 'מקור התמונות', items: [
+      { title: 'סוג המוצר', items: [
+        'קטגוריה: ' + getChecked('product-type'),
+        val('product-type-notes') !== '—' ? 'הערות: ' + val('product-type-notes') : null
+      ].filter(Boolean)},
+      { title: 'תמונות ווידאו', items: [
         'תמונות מגיעות מ: ' + getChecked('photo-source'),
+        val('photo-source-notes') !== '—' ? val('photo-source-notes') : null,
         'סוג צילום: ' + getChecked('photo-type'),
-        'כמות תמונות: ' + val('photo-count')
-      ]},
+        val('photo-type-notes') !== '—' ? val('photo-type-notes') : null,
+        'כמות תמונות: ' + val('photo-count'),
+        'וידאו: ' + getChecked('video-source'),
+        val('video-notes') !== '—' ? val('video-notes') : null
+      ].filter(Boolean)},
       { title: 'מידע שיש מראש', items: [
         'ידוע לפני: ' + getChecked('known-info'),
+        val('known-info-notes') !== '—' ? val('known-info-notes') : null,
         'צריך ליצור: ' + val('unknown-info')
-      ]},
+      ].filter(Boolean)},
       { title: 'שלבי ההעלאה', items: [getSteps()] },
-      { title: 'כמה כואב כל שלב', items: painLines },
       { title: 'תהליך אישור ופרסום', items: [
         'מי מאשר: ' + getChecked('approver'),
         'זמן להעלאה מלאה: ' + val('duration'),
