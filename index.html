@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מיפוי תהליך העלאת מוצר — מייה אינספיריישן</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f5f4f0;
+      color: #1a1a1a;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .container { max-width: 800px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 40px; }
+    header h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+    header p { font-size: 15px; color: #666; }
+
+    .progress-bar { display: flex; justify-content: center; gap: 8px; margin-bottom: 36px; }
+    .progress-dot { width: 10px; height: 10px; border-radius: 50%; background: #ddd; transition: background 0.3s; }
+    .progress-dot.active { background: #1a1a1a; }
+    .progress-dot.done { background: #888; }
+
+    .card { background: white; border-radius: 16px; padding: 32px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); display: none; }
+    .card.active { display: block; }
+
+    .card-number { font-size: 12px; font-weight: 600; color: #999; letter-spacing: 1px; margin-bottom: 8px; }
+    .card h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .card .subtitle { font-size: 14px; color: #666; margin-bottom: 24px; line-height: 1.6; }
+
+    .field-label { display: block; font-size: 14px; font-weight: 600; color: #333; margin-bottom: 8px; margin-top: 20px; }
+
+    input[type="text"], textarea {
+      width: 100%; border: 1.5px solid #e0e0e0; border-radius: 10px;
+      padding: 12px 14px; font-size: 14px; font-family: inherit;
+      color: #1a1a1a; background: #fafafa; transition: border-color 0.2s;
+      resize: vertical; direction: rtl;
+    }
+    input[type="text"]:focus, textarea:focus { outline: none; border-color: #1a1a1a; background: white; }
+    textarea { min-height: 90px; }
+
+    .checkbox-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .checkbox-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px; border: 1.5px solid #e0e0e0;
+      border-radius: 10px; cursor: pointer;
+      transition: all 0.15s; background: #fafafa; font-size: 14px;
+      user-select: none;
+    }
+    .checkbox-item:hover { border-color: #aaa; background: #f0f0f0; }
+    .checkbox-item.checked { border-color: #1a1a1a; background: #f0efeb; font-weight: 600; }
+
+    .check-icon {
+      width: 18px; height: 18px; border-radius: 5px; border: 2px solid #ccc;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.15s;
+    }
+    .checkbox-item.checked .check-icon { background: #1a1a1a; border-color: #1a1a1a; }
+    .check-icon svg { display: none; }
+    .checkbox-item.checked .check-icon svg { display: block; }
+
+    .steps-list { margin-bottom: 14px; }
+    .step-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; } }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%; background: #1a1a1a;
+      color: white; font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .step-row input { flex: 1; margin: 0; }
+    .step-delete {
+      width: 28px; height: 28px; border: none; background: none; color: #ccc;
+      font-size: 20px; cursor: pointer; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: color 0.2s; line-height: 1;
+    }
+    .step-delete:hover { color: #e53e3e; }
+
+    .add-step-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 16px; border: 1.5px dashed #ccc; border-radius: 10px;
+      background: none; color: #888; font-size: 14px; cursor: pointer;
+      width: 100%; justify-content: center; transition: all 0.2s; font-family: inherit;
+    }
+    .add-step-btn:hover { border-color: #888; color: #333; background: #fafafa; }
+
+    .pain-grid { display: grid; gap: 14px; }
+    .pain-row { display: flex; align-items: center; gap: 12px; }
+    .pain-label { width: 180px; font-size: 13px; color: #444; flex-shrink: 0; }
+    .pain-stars { display: flex; gap: 6px; }
+    .star {
+      width: 32px; height: 32px; border: 1.5px solid #ddd; border-radius: 8px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 16px; transition: all 0.15s;
+    }
+    .star:hover { background: #fff8e6; border-color: #f59e0b; }
+    .star.active { background: #fff3cd; border-color: #f59e0b; }
+
+    .nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
+    .btn-next {
+      background: #1a1a1a; color: white; border: none; border-radius: 10px;
+      padding: 12px 28px; font-size: 15px; font-weight: 600; cursor: pointer;
+      transition: background 0.2s; font-family: inherit;
+    }
+    .btn-next:hover { background: #333; }
+    .btn-back { background: none; border: none; color: #888; font-size: 14px; cursor: pointer; font-family: inherit; padding: 8px; }
+    .btn-back:hover { color: #333; }
+
+    .summary-section { margin-bottom: 20px; }
+    .summary-section h3 { font-size: 12px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .summary-item { padding: 7px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; line-height: 1.6; color: #1a1a1a; white-space: pre-wrap; }
+    .summary-item:last-child { border-bottom: none; }
+
+    .copy-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 14px; background: #1a1a1a; color: white;
+      border: none; border-radius: 10px; font-size: 15px; font-weight: 600;
+      cursor: pointer; font-family: inherit; margin-top: 24px; transition: background 0.2s;
+    }
+    .copy-btn:hover { background: #333; }
+    .copy-btn.copied { background: #22c55e; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>מיפוי תהליך העלאת מוצר</h1>
+    <p>ספרו לי איך אתם עושים את זה היום — ואני אדע לעשות את זה בעצמי</p>
+  </header>
+
+  <div class="progress-bar" id="progress"></div>
+
+  <!-- CARD 1 -->
+  <div class="card active" id="card-1">
+    <div class="card-number">שלב 1 מתוך 6</div>
+    <h2>מאיפה מגיע המוצר?</h2>
+    <p class="subtitle">לפני שמעלים ל-Shopify — מה קורה? איך המוצר מגיע אליכם?</p>
+
+    <span class="field-label">מאיפה מגיעות התמונות?</span>
+    <div class="checkbox-group" id="photo-source">
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>צלם חיצוני</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>צילום בחנות / מחסן</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>ספק / יצרן</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>טלפון / אייפד</span></div>
+    </div>
+
+    <span class="field-label">מי צולם?</span>
+    <div class="checkbox-group" id="photo-type">
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>דוגמנית</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>שטוח / על קולב</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>דיטייל (קרוב)</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>לייפסטייל</span></div>
+    </div>
+
+    <span class="field-label">כמה תמונות בממוצע למוצר?</span>
+    <input type="text" id="photo-count" placeholder="למשל: 4-6 תמונות">
+
+    <div class="nav">
+      <div></div>
+      <button class="btn-next" onclick="next()">הבא ←</button>
+    </div>
+  </div>
+
+  <!-- CARD 2 -->
+  <div class="card" id="card-2">
+    <div class="card-number">שלב 2 מתוך 6</div>
+    <h2>איזה מידע יש לכם לפני שמתחילים?</h2>
+    <p class="subtitle">מה כבר ידוע כשמגיעים לעלות מוצר?</p>
+
+    <span class="field-label">מה בדרך כלל ידוע מראש?</span>
+    <div class="checkbox-group" id="known-info">
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>שם המוצר</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>מחיר</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>הרכב בד / חומרים</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>מידות / ווריאנטים</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>קטגוריה</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>SKU / מספר מוצר</span></div>
+    </div>
+
+    <span class="field-label">מה לא ידוע ואתם צריכים ליצור / לבדות?</span>
+    <textarea id="unknown-info" placeholder="למשל: תיאור המוצר, מילות מפתח, alt text, קולקציות..."></textarea>
+
+    <div class="nav">
+      <button class="btn-back" onclick="back()">→ חזור</button>
+      <button class="btn-next" onclick="next()">הבא ←</button>
+    </div>
+  </div>
+
+  <!-- CARD 3 -->
+  <div class="card" id="card-3">
+    <div class="card-number">שלב 3 מתוך 6</div>
+    <h2>מה עושים ב-Shopify — לפי סדר</h2>
+    <p class="subtitle">רשמו את הצעדים שאתם עושים בפועל כשמעלים מוצר. הסדר חשוב.</p>
+
+    <div class="steps-list" id="steps-list">
+      <div class="step-row">
+        <span class="step-num">1</span>
+        <input type="text" placeholder="למשל: נכנסים ל-Products ← Add product">
+        <button class="step-delete" onclick="deleteStep(this)">×</button>
+      </div>
+      <div class="step-row">
+        <span class="step-num">2</span>
+        <input type="text" placeholder="למשל: כותבים את שם המוצר">
+        <button class="step-delete" onclick="deleteStep(this)">×</button>
+      </div>
+      <div class="step-row">
+        <span class="step-num">3</span>
+        <input type="text" placeholder="למשל: מעלים תמונות">
+        <button class="step-delete" onclick="deleteStep(this)">×</button>
+      </div>
+    </div>
+    <button class="add-step-btn" onclick="addStep()">+ הוסף שלב</button>
+
+    <div class="nav">
+      <button class="btn-back" onclick="back()">→ חזור</button>
+      <button class="btn-next" onclick="next()">הבא ←</button>
+    </div>
+  </div>
+
+  <!-- CARD 4 -->
+  <div class="card" id="card-4">
+    <div class="card-number">שלב 4 מתוך 6</div>
+    <h2>כמה כאב יש בכל שלב?</h2>
+    <p class="subtitle">דרגו כמה זמן ומאמץ לוקח כל חלק. ⭐ = קל, ⭐⭐⭐ = כואב מאוד</p>
+
+    <div class="pain-grid">
+      <div class="pain-row"><span class="pain-label">כתיבת תיאור</span><div class="pain-stars" data-key="desc"><div class="star" onclick="ratePain(this,1)">⭐</div><div class="star" onclick="ratePain(this,2)">⭐</div><div class="star" onclick="ratePain(this,3)">⭐</div></div></div>
+      <div class="pain-row"><span class="pain-label">בחירת תגיות</span><div class="pain-stars" data-key="tags"><div class="star" onclick="ratePain(this,1)">⭐</div><div class="star" onclick="ratePain(this,2)">⭐</div><div class="star" onclick="ratePain(this,3)">⭐</div></div></div>
+      <div class="pain-row"><span class="pain-label">alt text לתמונות</span><div class="pain-stars" data-key="alt"><div class="star" onclick="ratePain(this,1)">⭐</div><div class="star" onclick="ratePain(this,2)">⭐</div><div class="star" onclick="ratePain(this,3)">⭐</div></div></div>
+      <div class="pain-row"><span class="pain-label">meta title/description</span><div class="pain-stars" data-key="meta"><div class="star" onclick="ratePain(this,1)">⭐</div><div class="star" onclick="ratePain(this,2)">⭐</div><div class="star" onclick="ratePain(this,3)">⭐</div></div></div>
+      <div class="pain-row"><span class="pain-label">שיוך לקולקציות</span><div class="pain-stars" data-key="collections"><div class="star" onclick="ratePain(this,1)">⭐</div><div class="star" onclick="ratePain(this,2)">⭐</div><div class="star" onclick="ratePain(this,3)">⭐</div></div></div>
+      <div class="pain-row"><span class="pain-label">העלאת תמונות + סדר</span><div class="pain-stars" data-key="images"><div class="star" onclick="ratePain(this,1)">⭐</div><div class="star" onclick="ratePain(this,2)">⭐</div><div class="star" onclick="ratePain(this,3)">⭐</div></div></div>
+    </div>
+
+    <div class="nav">
+      <button class="btn-back" onclick="back()">→ חזור</button>
+      <button class="btn-next" onclick="next()">הבא ←</button>
+    </div>
+  </div>
+
+  <!-- CARD 5 -->
+  <div class="card" id="card-5">
+    <div class="card-number">שלב 5 מתוך 6</div>
+    <h2>מה קורה אחרי שמעלים?</h2>
+    <p class="subtitle">מה עושים לפני שהמוצר עולה לאוויר?</p>
+
+    <span class="field-label">מי מאשר את המוצר לפני פרסום?</span>
+    <div class="checkbox-group" id="approver">
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>אראל לבד</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>מנהלת הקטלוג</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>שניהם יחד</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>עולים ישר לאוויר</span></div>
+    </div>
+
+    <span class="field-label">כמה זמן לוקח תהליך מלא (מתחילה עד פרסום)?</span>
+    <input type="text" id="duration" placeholder="למשל: 20 דקות, שעה...">
+
+    <span class="field-label">כמה מוצרים מעלים בשבוע בממוצע?</span>
+    <input type="text" id="volume" placeholder="למשל: 5-10 מוצרים">
+
+    <span class="field-label">מה הכי כואב בתהליך הנוכחי?</span>
+    <textarea id="pain-free" placeholder="מה לוקח הכי הרבה זמן / הכי מעצבן..."></textarea>
+
+    <div class="nav">
+      <button class="btn-back" onclick="back()">→ חזור</button>
+      <button class="btn-next" onclick="next()">הבא ←</button>
+    </div>
+  </div>
+
+  <!-- CARD 6 -->
+  <div class="card" id="card-6">
+    <div class="card-number">שלב 6 מתוך 6</div>
+    <h2>מה אתם רוצים שאני אעשה?</h2>
+    <p class="subtitle">מה כן אוטומטי, ומה נשאר בידיים?</p>
+
+    <span class="field-label">מה אני עושה אוטומטית</span>
+    <div class="checkbox-group" id="auto-tasks">
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>כתיבת תיאור</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>meta title + description</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>alt text לתמונות</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>בחירת תגיות</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>שיוך לקולקציות</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>העלאה ל-Shopify</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>URL handle</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>בחירת template</span></div>
+    </div>
+
+    <span class="field-label">מה אני מציע — ואתם מאשרים לפני שמבצעים</span>
+    <textarea id="manual-tasks" placeholder="למשל: בחירת קולקציה ראשית, מחיר, פרסום..."></textarea>
+
+    <span class="field-label">משהו נוסף שחשוב לנו שתדע?</span>
+    <textarea id="extra-notes" placeholder="כל דבר שלא כיסינו — תהליכים מיוחדים, חריגים, הערות..."></textarea>
+
+    <div class="nav">
+      <button class="btn-back" onclick="back()">→ חזור</button>
+      <button class="btn-next" onclick="showSummary()">צור סיכום ←</button>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="card" id="summary-card">
+    <div class="card-number">סיכום</div>
+    <h2>תהליך העלאת מוצר — מייה אינספיריישן</h2>
+    <p class="subtitle">העתיקו את הסיכום ושלחו אותו בצ'אט</p>
+    <div id="summary-content"></div>
+    <button class="copy-btn" id="copy-btn" onclick="copySummary()">📋 העתק לצ'אט</button>
+  </div>
+</div>
+
+<script>
+  let currentCard = 1;
+  const totalCards = 6;
+  const painRatings = {};
+  let summaryText = '';
+
+  function initProgress() {
+    const bar = document.getElementById('progress');
+    bar.innerHTML = '';
+    for (let i = 1; i <= totalCards; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'progress-dot' + (i === currentCard ? ' active' : i < currentCard ? ' done' : '');
+      bar.appendChild(dot);
+    }
+  }
+  initProgress();
+
+  function toggle(el) {
+    el.classList.toggle('checked');
+  }
+
+  function next() {
+    document.getElementById('card-' + currentCard).classList.remove('active');
+    currentCard++;
+    document.getElementById('card-' + currentCard).classList.add('active');
+    initProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function back() {
+    document.getElementById('card-' + currentCard).classList.remove('active');
+    currentCard--;
+    document.getElementById('card-' + currentCard).classList.add('active');
+    initProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function addStep() {
+    const list = document.getElementById('steps-list');
+    const count = list.querySelectorAll('.step-row').length + 1;
+    const div = document.createElement('div');
+    div.className = 'step-row';
+    div.innerHTML = '<span class="step-num">' + count + '</span><input type="text" placeholder="תארו את השלב..."><button class="step-delete" onclick="deleteStep(this)">x</button>';
+    list.appendChild(div);
+    div.querySelector('input').focus();
+  }
+
+  function deleteStep(btn) {
+    btn.closest('.step-row').remove();
+    document.querySelectorAll('.step-row').forEach((row, i) => {
+      row.querySelector('.step-num').textContent = i + 1;
+    });
+  }
+
+  function ratePain(star, level) {
+    const group = star.closest('.pain-stars');
+    const key = group.dataset.key;
+    group.querySelectorAll('.star').forEach((s, i) => s.classList.toggle('active', i < level));
+    painRatings[key] = level;
+  }
+
+  function getChecked(groupId) {
+    return Array.from(document.querySelectorAll('#' + groupId + ' .checkbox-item.checked span'))
+      .map(function(el) { return el.textContent; }).join(', ') || '—';
+  }
+
+  function getSteps() {
+    const rows = Array.from(document.querySelectorAll('#steps-list input'))
+      .map(function(inp, i) { return inp.value.trim() ? (i + 1) + '. ' + inp.value.trim() : null; })
+      .filter(Boolean);
+    return rows.join('\n') || '—';
+  }
+
+  function getPain(key) {
+    const n = painRatings[key] || 0;
+    return n ? Array(n + 1).join('s').split('').map(function() { return 'ss'; }).join('').substring(0, n * 2) : '—';
+  }
+
+  function getPainStars(key) {
+    const n = painRatings[key] || 0;
+    if (!n) return '—';
+    var s = '';
+    for (var i = 0; i < n; i++) s += 'ss';
+    return s || '—';
+  }
+
+  function val(id) {
+    var el = document.getElementById(id);
+    return el && el.value.trim() ? el.value.trim() : '—';
+  }
+
+  function showSummary() {
+    document.getElementById('card-6').classList.remove('active');
+    document.getElementById('progress').style.display = 'none';
+    document.getElementById('summary-card').classList.add('active');
+
+    var painLabels = {
+      desc: 'כתיבת תיאור',
+      tags: 'בחירת תגיות',
+      alt: 'alt text',
+      meta: 'meta title/description',
+      collections: 'שיוך לקולקציות',
+      images: 'העלאת תמונות'
+    };
+
+    var painLines = Object.keys(painLabels).map(function(key) {
+      var n = painRatings[key] || 0;
+      var stars = n ? new Array(n + 1).join('⭐') : '—';
+      return painLabels[key] + ': ' + stars;
+    });
+
+    var sections = [
+      { title: 'מקור התמונות', items: [
+        'תמונות מגיעות מ: ' + getChecked('photo-source'),
+        'סוג צילום: ' + getChecked('photo-type'),
+        'כמות תמונות: ' + val('photo-count')
+      ]},
+      { title: 'מידע שיש מראש', items: [
+        'ידוע לפני: ' + getChecked('known-info'),
+        'צריך ליצור: ' + val('unknown-info')
+      ]},
+      { title: 'שלבי ההעלאה', items: [getSteps()] },
+      { title: 'כמה כואב כל שלב', items: painLines },
+      { title: 'תהליך אישור ופרסום', items: [
+        'מי מאשר: ' + getChecked('approver'),
+        'זמן להעלאה מלאה: ' + val('duration'),
+        'כמות מוצרים בשבוע: ' + val('volume'),
+        'הכי כואב: ' + val('pain-free')
+      ]},
+      { title: 'מה הסקיל יעשה אוטומטית', items: [getChecked('auto-tasks')] },
+      { title: 'מה מאשרים לפני ביצוע', items: [val('manual-tasks')] },
+      { title: 'הערות נוספות', items: [val('extra-notes')] }
+    ];
+
+    summaryText = '## תהליך העלאת מוצר — מייה אינספיריישן\n\n' +
+      sections.map(function(s) {
+        return '### ' + s.title + '\n' + s.items.join('\n');
+      }).join('\n\n');
+
+    document.getElementById('summary-content').innerHTML = sections.map(function(s) {
+      return '<div class="summary-section"><h3>' + s.title + '</h3>' +
+        s.items.map(function(item) {
+          return '<div class="summary-item">' + item + '</div>';
+        }).join('') + '</div>';
+    }).join('');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function copySummary() {
+    navigator.clipboard.writeText(summaryText).then(function() {
+      var btn = document.getElementById('copy-btn');
+      btn.textContent = 'הועתק!';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'העתק לצ\'אט';
+        btn.classList.remove('copied');
+      }, 2500);
+    });
+  }
+</script>
+</body>
+</html>
