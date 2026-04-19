@@ -273,7 +273,7 @@
 
   <!-- CARD 6 -->
   <div class="card" id="card-6">
-    <div class="card-number">שלב 6 מתוך 6</div>
+    <div class="card-number">שלב 6 מתוך 7</div>
     <h2>מה אתם רוצים שאני אעשה?</h2>
     <p class="subtitle">מה כן אוטומטי, ומה נשאר בידיים?</p>
 
@@ -292,8 +292,19 @@
     <span class="field-label">מה אני מציע — ואתם מאשרים לפני שמבצעים</span>
     <textarea id="manual-tasks" placeholder="למשל: בחירת קולקציה ראשית, מחיר, פרסום..."></textarea>
 
-    <span class="field-label">משהו נוסף שחשוב לנו שתדע?</span>
-    <textarea id="extra-notes" placeholder="כל דבר שלא כיסינו — תהליכים מיוחדים, חריגים, הערות..."></textarea>
+    <div class="nav">
+      <button class="btn-back" onclick="back()">→ חזור</button>
+      <button class="btn-next" onclick="next()">הבא ←</button>
+    </div>
+  </div>
+
+  <!-- CARD 7 -->
+  <div class="card" id="card-7">
+    <div class="card-number">שלב 7 מתוך 7</div>
+    <h2>כתבו בחופשיות</h2>
+    <p class="subtitle">כל מה שלא נכנס לשאלות. תהליכים מיוחדים, חריגים, דברים שחשוב שנדע, כל מה שעולה לכם בראש.</p>
+
+    <textarea id="free-text" style="min-height: 240px; font-size: 15px; line-height: 1.7;" placeholder="כתבו כאן כל מה שרוצים..."></textarea>
 
     <div class="nav">
       <button class="btn-back" onclick="back()">→ חזור</button>
@@ -314,7 +325,7 @@
 
 <script>
   let currentCard = 1;
-  const totalCards = 6;
+  const totalCards = 7;
   const painRatings = {};
   let summaryText = '';
 
@@ -443,7 +454,7 @@
       ]},
       { title: 'מה הסקיל יעשה אוטומטית', items: [getChecked('auto-tasks')] },
       { title: 'מה מאשרים לפני ביצוע', items: [val('manual-tasks')] },
-      { title: 'הערות נוספות', items: [val('extra-notes')] }
+      { title: 'טקסט חופשי', items: [val('free-text')] }
     ];
 
     summaryText = '## תהליך העלאת מוצר — מייה אינספיריישן\n\n' +
