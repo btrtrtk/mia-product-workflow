@@ -277,6 +277,18 @@
     <h2>מה קורה אחרי שמעלים?</h2>
     <p class="subtitle">מה עושים לפני שהמוצר עולה לאוויר?</p>
 
+    <span class="field-label">לאיזה ערוצי מכירה מפרסמים את המוצר?</span>
+    <div class="checkbox-group" id="sales-channels">
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>Online Store</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>Point of Sale</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>Facebook & Instagram</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>Google & YouTube</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>TikTok</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>Shop</span></div>
+      <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>Inbox</span></div>
+    </div>
+    <input type="text" id="sales-channels-notes" placeholder="הערות על ערוצי המכירה..." style="margin-top:10px;">
+
     <span class="field-label">מי מאשר את המוצר לפני פרסום?</span>
     <div class="checkbox-group" id="approver">
       <div class="checkbox-item" onclick="toggle(this)"><div class="check-icon"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span>אראל לבד</span></div>
@@ -479,11 +491,14 @@
       ].filter(Boolean)},
       { title: 'שלבי ההעלאה', items: [getSteps()] },
       { title: 'תהליך אישור ופרסום', items: [
+        'ערוצי מכירה: ' + getChecked('sales-channels'),
+        val('sales-channels-notes') !== '—' ? val('sales-channels-notes') : null,
         'מי מאשר: ' + getChecked('approver'),
+        val('approver-notes') !== '—' ? val('approver-notes') : null,
         'זמן להעלאה מלאה: ' + val('duration'),
         'כמות מוצרים בשבוע: ' + val('volume'),
         'הכי כואב: ' + val('pain-free')
-      ]},
+      ].filter(Boolean)},
       { title: 'מה הסקיל יעשה אוטומטית', items: [getChecked('auto-tasks')] },
       { title: 'מה מאשרים לפני ביצוע', items: [val('manual-tasks')] },
       { title: 'טקסט חופשי', items: [val('free-text')] }
