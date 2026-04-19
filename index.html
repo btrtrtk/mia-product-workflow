@@ -307,7 +307,8 @@
     <h2>תהליך העלאת מוצר — מייה אינספיריישן</h2>
     <p class="subtitle">העתיקו את הסיכום ושלחו אותו בצ'אט</p>
     <div id="summary-content"></div>
-    <button class="copy-btn" id="copy-btn" onclick="copySummary()">📋 העתק לצ'אט</button>
+    <button class="copy-btn" onclick="sendEmail()">📧 שלח לאראל</button>
+    <button class="copy-btn" id="copy-btn" onclick="copySummary()" style="background:#444; margin-top:10px; font-size:13px; padding:10px;">📋 העתק טקסט</button>
   </div>
 </div>
 
@@ -460,13 +461,19 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  function sendEmail() {
+    var subject = encodeURIComponent('אפיון תהליך העלאת מוצר — מייה אינספיריישן');
+    var body = encodeURIComponent(summaryText);
+    window.location.href = 'mailto:erel@magic-ltd.com?subject=' + subject + '&body=' + body;
+  }
+
   function copySummary() {
     navigator.clipboard.writeText(summaryText).then(function() {
       var btn = document.getElementById('copy-btn');
       btn.textContent = 'הועתק!';
       btn.classList.add('copied');
       setTimeout(function() {
-        btn.textContent = 'העתק לצ\'אט';
+        btn.textContent = 'העתק';
         btn.classList.remove('copied');
       }, 2500);
     });
